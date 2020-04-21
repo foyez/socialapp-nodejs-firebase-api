@@ -1,5 +1,7 @@
 const router = require('express').Router()
 
+const auth = require('../middleware/auth')
+
 const screamsController = require('../controller/screams')
 
 /**
@@ -14,6 +16,6 @@ router.get('/', screamsController.getScreams)
  * @desc    Create a scream
  * @access  Public
  */
-router.post('/', screamsController.createScream)
+router.post('/', auth.required, screamsController.createScream)
 
 module.exports = router

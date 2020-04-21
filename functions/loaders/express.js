@@ -31,15 +31,13 @@ module.exports = (app) => {
   app.use((err, req, res, next) => {
     // console.log(err.name, '===========')
 
-    // if (err.name === 'UnauthorizedError') {
-    //   return res
-    //     .status(err.status)
-    //     .send({ message: err.message })
-    //     .end();
-    // }
+    if (err.name === 'UnauthorizedError' || err.status === 401) {
+      const errors = { message: err.message || 'Unauthorized' }
+
+      return res.status(err.status || 401).json({ errors })
+    }
 
     if (err.name === 'ValidationError') {
-      // console.log(err, "==========")
       return res.status(err.status || 422).json({
         errors: err.details
           ? // Joi error handling
@@ -60,7 +58,9 @@ module.exports = (app) => {
     return next(err)
   })
 
+  // Handle unknown & server errors
   app.use((err, req, res, next) => {
+    // console.log(err.name, '===============')
     const errors = { message: err.message }
 
     if (require('../config').nodeEnv === 'development') {
