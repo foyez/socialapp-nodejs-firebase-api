@@ -29,6 +29,8 @@ module.exports = (app) => {
 
   // error handlers
   app.use((err, req, res, next) => {
+    // console.log(err.name, '===========')
+
     // if (err.name === 'UnauthorizedError') {
     //   return res
     //     .status(err.status)
@@ -37,6 +39,7 @@ module.exports = (app) => {
     // }
 
     if (err.name === 'ValidationError') {
+      // console.log(err, "==========")
       return res.status(err.status || 422).json({
         errors: err.details
           ? // Joi error handling

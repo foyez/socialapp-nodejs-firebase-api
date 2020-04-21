@@ -1,19 +1,26 @@
 const router = require('express').Router()
 
-const { db } = require('../../util/admin')
+const usersController = require('../controller/users')
 
-router.get('/users', async (req, res) => {
-  // try {
-  //   const data = await db.collection('screams').get()
-  //   let screams = []
-  //   data.forEach((doc) => {
-  //     screams.push(doc.data())
-  //   })
-  //   return res.json(screams)
-  // } catch (err) {
-  //   console.log(err)
-  // }
-  res.send('Hello world')
-})
+/**
+ * @route   POST api/users
+ * @desc    Create a user
+ * @access  Public
+ */
+router.post('/users', usersController.signUp)
+
+/**
+ * @route   POST api/users/login
+ * @desc    login
+ * @access  Public
+ */
+router.post('/users/login', usersController.login)
+
+/**
+ * @route   PUT api/user
+ * @desc    Update user
+ * @access  Private
+ */
+router.post('/user', usersController.updateUser)
 
 module.exports = router

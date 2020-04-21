@@ -1,0 +1,31 @@
+# GET http://localhost:5000/socialapp-foyez/us-central1/api/screams
+
+[
+  {
+    id: 'eS1bxpON3xE5tmfeBMXu',
+    userHandle: 'user',
+    body: 'second scream',
+    likeCount: 5,
+    commentCount: 2,
+    createdAt: '2020-04-21T09:47:23.745Z'
+  }
+]
+
+# POST http://localhost:5000/socialapp-foyez/us-central1/api/screams
+
+{
+  username: 'user',
+  body: 'second scream'
+}
+
+# POST http://localhost:5000/socialapp-foyez/us-central1/api/users
+
+{
+  token: "hfosyr8wy8w9hsfes"
+}
+
+# POST http://localhost:5000/socialapp-foyez/us-central1/api/users/login
+
+{
+  token: "hfosyr8wy8w9hsfes"
+}

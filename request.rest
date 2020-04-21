@@ -1,0 +1,33 @@
+GET http://localhost:5000/socialapp-foyez/us-central1/api/screams
+
+###
+
+POST http://localhost:5000/socialapp-foyez/us-central1/api/screams
+Content-Type: application/json
+
+{
+  "body": "new scream",
+  "username": "new"
+}
+
+###
+
+POST http://localhost:5000/socialapp-foyez/us-central1/api/users
+Content-Type: application/json
+
+{
+  "email": "foyez@email.com",
+  "username": "foyez",
+  "password": "testpass",
+  "confirmPassword": "testpass"
+}
+
+###
+
+POST http://localhost:5000/socialapp-foyez/us-central1/api/users/login
+Content-Type: application/json
+
+{
+  "email": "foyez@email.com",
+  "password": "testpas"
+}
