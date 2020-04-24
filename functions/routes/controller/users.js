@@ -1,5 +1,5 @@
 const firebase = require('firebase')
-const { db } = require('../../util/admin')
+const { admin, db } = require('../../util/admin')
 
 const firebaseConfig = require('../../config').firebaseConfig
 const {
@@ -33,11 +33,13 @@ exports.signUp = async (req, res, next) => {
 
     const userId = userAuth.user.uid
     const token = await userAuth.user.getIdToken()
+    const noImg = 'no-img.webp'
 
     const userCredentials = {
       userId,
       email,
       username,
+      imageUrl: `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${noImg}?alt=media`,
       createdAt: new Date().toISOString(),
     }
 
@@ -74,6 +76,58 @@ exports.login = async (req, res, next) => {
   } catch (err) {
     next(err)
   }
+}
+
+// Upload Profile Image
+exports.uploadImage = (req, res, next) => {
+  const BusBoy = require('busboy')
+  const path = require('path')
+  const os = require('os')
+  const fs = require('fs')
+
+  const busboy = new BusBoy({ headers: req.headers })
+
+  let imgFilename
+  let imgToBeUploaded = {}
+
+  busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
+      return res
+        .status(400)
+        .json({ errors: { message: 'Wrong file type submitted' } })
+    }
+    // my.image.png
+    const splitFilename = filename.split('.')
+    const imgExt = splitFilename[splitFilename.length - 1]
+    const imgFilename = `${Math.round(Math.random() * 100000000000)}.${imgExt}`
+    const filePath = path.join(os.tmpdir(), imgFilename)
+    imgToBeUploaded = { filePath, mimetype }
+    file.pipe(fs.createWriteStream(filePath))
+  })
+
+  busboy.on('finish', async () => {
+    try {
+      await admin
+        .storage()
+        .bucket()
+        .upload(imgToBeUploaded.filePath, {
+          resumable: false,
+          metadata: {
+            metadata: {
+              contentType: imgToBeUploaded.mimetype,
+            },
+          },
+        })
+
+      const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${imgFilename}?alt=media`
+      await db.doc(`/users/${req.user.username}`).update({ imageUrl })
+
+      return res.json({ message: `Image uploaded successfully` })
+    } catch (err) {
+      next(err)
+    }
+  })
+  busboy.end(req.rawBody)
 }
 
 exports.updateUser = () => {}

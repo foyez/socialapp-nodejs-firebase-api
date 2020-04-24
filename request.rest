@@ -17,8 +17,8 @@ POST http://localhost:5000/socialapp-foyez/us-central1/api/users
 Content-Type: application/json
 
 {
-  "email": "foyez@email.com",
-  "username": "foyez",
+  "email": "rafeh@email.com",
+  "username": "rafeh",
   "password": "testpass",
   "confirmPassword": "testpass"
 }
@@ -29,6 +29,9 @@ POST http://localhost:5000/socialapp-foyez/us-central1/api/users/login
 Content-Type: application/json
 
 {
-  "email": "foyez@email.com",
+  "email": "rafeh@email.com",
   "password": "testpass"
 }
+
+POST http://localhost:5000/socialapp-foyez/us-central1/api/user/image
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjVlOWVlOTdjODQwZjk3ZTAyNTM2ODhhM2I3ZTk0NDczZTUyOGE3YjUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc29jaWFsYXBwLWZveWV6IiwiYXVkIjoic29jaWFsYXBwLWZveWV6IiwiYXV0aF90aW1lIjoxNTg3NzA5MDA3LCJ1c2VyX2lkIjoiRUtpM0lLcHd2ellQOG5mQkxOcW03WDR0WHFHMiIsInN1YiI6IkVLaTNJS3B3dnpZUDhuZkJMTnFtN1g0dFhxRzIiLCJpYXQiOjE1ODc3MDkwMDcsImV4cCI6MTU4NzcxMjYwNywiZW1haWwiOiJmb3llekBlbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZm95ZXpAZW1haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Mkt7NrFasSmVGnfbiSZKzD0tYaOy50usBuGguGH07zdyRi_aPrxsuIonRFzK2Ti--VvXFlKS3XxkyzptjyetQNYa8vym2ztdXDgJGOZUxyUtNaXfT_Nd2GU2jt3Yk4fgpoK4U2jZ9KiL2r5zflITxnWFm8EMIYbtQiORnd-ifP2EGfMbt4wLv4FYsLMnkgUTNcpgQCcnXAiBOxU2toGns98zXC5f86ykcIE12Ad7qSbnVr2CRv3MCp4h6MgHSB53Z13P0_uHzDgiRWc94DO9Y4P_AvAP90VeBpRQ45cnPpofj3lZbP7kvRbCgleGkskSiws_lfld0yrOvtSMbcg_Mw

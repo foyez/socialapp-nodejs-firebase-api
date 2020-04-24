@@ -1,6 +1,7 @@
 const router = require('express').Router()
 
 const usersController = require('../controller/users')
+const authMiddleware = require('../middleware/auth')
 
 /**
  * @route   POST api/users
@@ -15,6 +16,13 @@ router.post('/users', usersController.signUp)
  * @access  Public
  */
 router.post('/users/login', usersController.login)
+
+/**
+ * @route   POST api/user/image
+ * @desc    upload profile image
+ * @access  Private
+ */
+router.post('/user/image', authMiddleware.required, usersController.uploadImage)
 
 /**
  * @route   PUT api/user

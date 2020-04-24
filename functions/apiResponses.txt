@@ -29,3 +29,11 @@
 {
   token: "hfosyr8wy8w9hsfes"
 }
+
+# Error Response
+
+{
+  "errors": {
+      "message": "Unauthorized"
+  }
+}
