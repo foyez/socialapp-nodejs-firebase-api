@@ -29,6 +29,13 @@ router.post('/user/image', authMiddleware.required, usersController.uploadImage)
  * @desc    Update user
  * @access  Private
  */
-router.post('/user', usersController.updateUser)
+router.put('/user', authMiddleware.required, usersController.updateUserDetails)
+
+/**
+ * @route   GET api/user
+ * @desc    Get a user
+ * @access  Private
+ */
+router.get('/user', authMiddleware.required, usersController.getUserDetails)
 
 module.exports = router

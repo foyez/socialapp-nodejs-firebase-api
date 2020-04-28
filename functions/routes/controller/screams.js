@@ -34,3 +34,32 @@ exports.createScream = async (req, res, next) => {
     next(err)
   }
 }
+
+// Get a scream
+exports.getScream = async (req, res, next) => {
+  try {
+    const screamSnapshot = await db.doc(`/screams/${req.params.screamId}`).get()
+
+    if (!screamSnapshot.exists) return res.sendStatus(404)
+
+    const screamData = screamSnapshot.data()
+    screamData.screamId = screamSnapshot.id
+
+    const commentsSnapshot = await db
+      .collection('comments')
+      .orderBy('createdAt', 'desc')
+      .where('screamId', '==', req.params.screamId)
+      .get()
+
+    if (commentsSnapshot.empty) return res.sendStatus(404)
+
+    screamData.comments = []
+    commentsSnapshot.forEach((doc) => {
+      screamData.comments.push(doc.data())
+    })
+
+    return res.json(screamData)
+  } catch (err) {
+    next(err)
+  }
+}

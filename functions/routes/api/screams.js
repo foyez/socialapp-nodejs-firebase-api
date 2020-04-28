@@ -18,4 +18,11 @@ router.get('/', screamsController.getScreams)
  */
 router.post('/', auth.required, screamsController.createScream)
 
+/**
+ * @route   GET api/screams/:screamId
+ * @desc    Get a scream
+ * @access  Public
+ */
+router.get('/:screamId', screamsController.getScream)
+
 module.exports = router

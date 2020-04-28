@@ -5,6 +5,7 @@ const firebaseConfig = require('../../config').firebaseConfig
 const {
   validateSignUpData,
   validateLoginData,
+  validateUpdateUserDetails,
 } = require('../../util/validator')
 
 firebase.initializeApp(firebaseConfig)
@@ -130,4 +131,42 @@ exports.uploadImage = (req, res, next) => {
   busboy.end(req.rawBody)
 }
 
-exports.updateUser = () => {}
+// Update User Details
+exports.updateUserDetails = async (req, res, next) => {
+  const userDetails = validateUpdateUserDetails(req.body)
+
+  try {
+    await db.doc(`/users/${req.user.username}`).update(userDetails)
+
+    return res.json({ message: 'Details updated successfully' })
+  } catch (err) {
+    next(err)
+  }
+}
+
+// Get user details
+exports.getUserDetails = async (req, res, next) => {
+  let userData = {}
+
+  try {
+    const userSnapshot = await db.doc(`/users/${req.user.username}`).get()
+
+    if (!userSnapshot.exists) return res.sendStatus(401)
+
+    userData.credentials = userSnapshot.data()
+
+    const likesSnapshot = await db
+      .collection('likes')
+      .where('username', '==', req.user.username)
+      .get()
+
+    userData.likes = []
+    likesSnapshot.forEach((doc) => {
+      userData.likes.push(doc.data())
+    })
+
+    return res.json(userData)
+  } catch (err) {
+    next(err)
+  }
+}
