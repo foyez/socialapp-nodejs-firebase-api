@@ -25,4 +25,15 @@ router.post('/', auth.required, screamsController.createScream)
  */
 router.get('/:screamId', screamsController.getScream)
 
+/**
+ * @route   POST api/screams/:screamId/comment
+ * @desc    Create a comment
+ * @access  Private
+ */
+router.post(
+  '/:screamId/comment',
+  auth.required,
+  screamsController.createComment,
+)
+
 module.exports = router

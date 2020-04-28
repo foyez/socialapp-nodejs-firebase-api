@@ -30,6 +30,14 @@ exports.validateLoginData = (credentials) => {
   return schema.validate(credentials, { abortEarly: false })
 }
 
+exports.validateCommentData = (data) => {
+  const schema = Joi.object({
+    body: Joi.string().required(),
+  })
+
+  return schema.validate(data, { abortEarly: false })
+}
+
 const isEmpty = (string) => {
   if (string.trim() === '') return true
   else return false

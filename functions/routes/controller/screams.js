@@ -1,4 +1,5 @@
 const { db } = require('../../util/admin')
+const { validateCommentData } = require('../../util/validator')
 
 exports.getScreams = async (req, res, next) => {
   try {
@@ -59,6 +60,34 @@ exports.getScream = async (req, res, next) => {
     })
 
     return res.json(screamData)
+  } catch (err) {
+    next(err)
+  }
+}
+
+// Create comment
+exports.createComment = async (req, res, next) => {
+  const { error } = validateCommentData(req.body)
+
+  if (error) return next(error)
+
+  const newComment = {
+    body: req.body.body,
+    screamId: req.params.screamId,
+    username: req.user.username,
+    userImage: req.user.imageUrl,
+    createdAt: new Date().toISOString(),
+  }
+
+  try {
+    const screamSnapshot = await db.doc(`/screams/${req.params.screamId}`).get()
+
+    if (!screamSnapshot.exists) return res.sendStatus(404)
+
+    const commentRef = await db.collection('comments').add(newComment)
+    newComment.id = commentRef.id
+
+    return res.json(newComment)
   } catch (err) {
     next(err)
   }

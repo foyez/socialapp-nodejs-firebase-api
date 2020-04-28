@@ -27,7 +27,9 @@ const jwt = (properties) => async (req, res, next) => {
         .where('userId', '==', req[userProperty].uid)
         .limit(1)
         .get()
+
       req[userProperty].username = userSnapshot.docs[0].data().username
+      req[userProperty].imageUrl = userSnapshot.docs[0].data().imageUrl
 
       // console.log(req[userProperty])
       return next()
