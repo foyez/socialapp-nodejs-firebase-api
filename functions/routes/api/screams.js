@@ -26,6 +26,13 @@ router.post('/', auth.required, screamsController.createScream)
 router.get('/:screamId', screamsController.getScream)
 
 /**
+ * @route   DELETE api/screams/:screamId
+ * @desc    Delete a scream
+ * @access  Private
+ */
+router.delete('/:screamId', auth.required, screamsController.deleteScream)
+
+/**
  * @route   POST api/screams/:screamId/comment
  * @desc    Create a comment
  * @access  Private
@@ -35,5 +42,19 @@ router.post(
   auth.required,
   screamsController.createComment,
 )
+
+/**
+ * @route   GET api/screams/:screamId/like
+ * @desc    like a scream
+ * @access  Private
+ */
+router.get('/:screamId/like', auth.required, screamsController.likeScream)
+
+/**
+ * @route   GET api/screams/:screamId/unlike
+ * @desc    Unlike a scream
+ * @access  Private
+ */
+router.get('/:screamId/unlike', auth.required, screamsController.unlikeScream)
 
 module.exports = router

@@ -23,6 +23,9 @@ exports.createScream = async (req, res, next) => {
   const newScream = {
     username,
     body,
+    userImage: req.user.imageUrl,
+    likeCount: 0,
+    commentCount: 0,
     createdAt: new Date().toISOString(),
   }
 
@@ -65,6 +68,25 @@ exports.getScream = async (req, res, next) => {
   }
 }
 
+// Delete a scream
+exports.deleteScream = async (req, res, next) => {
+  try {
+    const screamRef = db.doc(`/screams/${req.params.screamId}`)
+    const screamSnapshot = await screamRef.get()
+
+    if (!screamSnapshot.exists) return res.sendStatus(404)
+
+    const { username } = screamSnapshot.data()
+    if (username !== req.user.username) return res.sendStatus(403)
+
+    await screamRef.delete()
+
+    return res.json({ message: 'Scream deleted successfully' })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // Create comment
 exports.createComment = async (req, res, next) => {
   const { error } = validateCommentData(req.body)
@@ -84,10 +106,77 @@ exports.createComment = async (req, res, next) => {
 
     if (!screamSnapshot.exists) return res.sendStatus(404)
 
+    await screamSnapshot.ref.update({
+      commentCount: screamSnapshot.data().commentCount + 1,
+    })
     const commentRef = await db.collection('comments').add(newComment)
     newComment.id = commentRef.id
 
     return res.json(newComment)
+  } catch (err) {
+    next(err)
+  }
+}
+
+// Like a scream
+exports.likeScream = async (req, res, next) => {
+  try {
+    const screamRef = db.doc(`/screams/${req.params.screamId}`)
+    const screamSnapshot = await screamRef.get()
+
+    if (!screamSnapshot.exists) return res.sendStatus(404)
+
+    let screamData = screamSnapshot.data()
+    screamData.id = screamRef.id
+
+    const likeSnapshot = await db
+      .collection('likes')
+      .where('username', '==', req.user.username)
+      .limit(1)
+      .get()
+
+    if (likeSnapshot.empty) {
+      await db.collection('likes').add({
+        username: req.user.username,
+        screamId: req.params.screamId,
+      })
+
+      screamData.likeCount++
+      await screamRef.update({ likeCount: screamData.likeCount })
+    }
+
+    return res.json(screamData)
+  } catch (err) {
+    next(err)
+  }
+}
+
+// unlike a scream
+exports.unlikeScream = async (req, res, next) => {
+  try {
+    const screamRef = db.doc(`/screams/${req.params.screamId}`)
+    const screamSnapshot = await screamRef.get()
+
+    if (!screamSnapshot.exists) return res.sendStatus(404)
+
+    let screamData = screamSnapshot.data()
+    screamData.id = screamRef.id
+
+    const likeSnapshot = await db
+      .collection('likes')
+      .where('screamId', '==', req.params.screamId)
+      .where('username', '==', req.user.username)
+      .limit(1)
+      .get()
+
+    if (!likeSnapshot.empty) {
+      await db.doc(`/likes/${likeSnapshot.docs[0].id}`).delete()
+
+      screamData.likeCount--
+      await screamRef.update({ likeCount: screamData.likeCount })
+    }
+
+    return res.json(screamData)
   } catch (err) {
     next(err)
   }
